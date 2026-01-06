@@ -2,5 +2,6 @@
 resolver = "2"
 
 members = [
-  "dpdk-sys"
+  "dpdk-sys",
+  "rust_example"
 ]

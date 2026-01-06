@@ -1,0 +1,20 @@
+[package]
+name = "reflector"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "reflector"
+path = "src/main.rs"
+
+[[bin]]
+name = "minimal_test"
+path = "src/minimal_test.rs"
+
+[dependencies]
+# Use the dpdk-sys bindings from the parent directory
+# Package name is rust-dpdk-sys, but the crate name is dpdk_sys
+rust-dpdk-sys = { path = "../dpdk-sys" }
+
+# For command line argument parsing
+libc = "0.2"

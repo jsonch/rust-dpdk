@@ -117,7 +117,10 @@ impl State {
         do_macro: bool,
     ) -> clang::TranslationUnit<'a> {
         let mut argument = vec![
-            "-march=native".into(),
+            "-march=x86-64".into(),
+            "-msse4.2".into(),
+            "-mrtm".into(),
+            // "-march=native".into(),
             format!(
                 "-I{}",
                 self.include_path.as_ref().unwrap().to_str().unwrap()
@@ -165,7 +168,8 @@ impl State {
         let output = Command::new("bash")
             .args([
                 "-c",
-                "clang -march=native -Wp,-v -x c - -fsyntax-only < /dev/null 2>&1 | sed -e '/^#include <...>/,/^End of search/{ //!b };d'",
+                // "clang -march=native -Wp,-v -x c - -fsyntax-only < /dev/null 2>&1 | sed -e '/^#include <...>/,/^End of search/{ //!b };d'",
+                "clang -march=x86-64 -msse4.2 -mrtm -Wp,-v -x c - -fsyntax-only < /dev/null 2>&1 | sed -e '/^#include <...>/,/^End of search/{ //!b };d'",
             ])
             .output()
             .expect("failed to extract cc include path");
@@ -778,7 +782,10 @@ impl State {
                                 .arg(format!("-I{}", output_include))
                                 .arg("-imacros")
                                 .arg(dpdk_config_path.to_str().unwrap())
-                                .arg("-march=native")
+                                // .arg("-march=native")
+                                .arg("-march=x86-64")
+                                .arg("-msse4.2")
+                                .arg("-mrtm")
                                 .arg(format!("-D__CHECK_FMT={}", fmt_name))
                                 .arg(format!("-D__CHECK_VAL={}", name))
                                 .arg("-o")
@@ -939,7 +946,10 @@ impl State {
             .clang_arg(format!("-I{}", self.out_path.to_str().unwrap()))
             .clang_arg("-imacros")
             .clang_arg(dpdk_config_path.to_str().unwrap())
-            .clang_arg("-march=native")
+            // .clang_arg("-march=native")
+            .clang_arg("-march=x86-64")
+            .clang_arg("-msse4.2")
+            .clang_arg("-mrtm")
             .clang_arg("-Wno-everything")
             .clang_arg("-DALLOW_INTERNAL_API") // We will not use internal API, but it is necessary to generate bindings.
             .opaque_type("vmbus_bufring")
@@ -1016,7 +1026,10 @@ impl State {
             .include(dpdk_include_path)
             .include(&self.out_path)
             .flag("-w") // hide warnings
-            .flag("-march=native")
+            // .flag("-march=native")
+            .flag("-march=x86-64")
+            .flag("-msse4.2")
+            .flag("-mrtm")
             .flag("-imacros")
             .flag(dpdk_config.to_str().unwrap())
             // .flag(&format!("-L{}", lib_path.to_str().unwrap()))

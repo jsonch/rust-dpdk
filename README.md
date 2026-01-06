@@ -1,3 +1,18 @@
+
+
+# usage
+
+1. install dpdk 22.11 with `dpdk-install.sh`
+2. enable hugepages with `setup-hugepages.sh`
+3. build the rust dpdk bindings and example: `cargo build --release`
+4. run the example on the test pcap `sudo target/release/reflector -l 0 --no-huge --no-pci --vdev 'net_pcap0,rx_pcap=rust_example/test.pcap,tx_pcap=rust_example/out.pcap' -- 0`
+
+## diffs from upstream
+
+- the example (in rust_example), dpdk-install.sh, and setup-hugepages.sh are new. 
+- in the library, changed the arch target to get everything working on an orbstack vm with rosetta. Instead of march=native, used "-march=x86-64 -msse4.2 -mrtm". We pass these args to the DPDK build (in `dpdk-install.sh`) and make small changes to  `/dpdk-sys/build.rs`. 
+
+
 # rust-dpdk
 
 [![Build Status](https://github.com/ANLAB-KAIST/rust-dpdk/actions/workflows/build.yaml/badge.svg)](https://github.com/ANLAB-KAIST/rust-dpdk/actions/workflows/build.yaml)
