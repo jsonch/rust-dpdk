@@ -11,7 +11,7 @@
 
 - the example (in rust_example), dpdk-install.sh, and setup-hugepages.sh are new. 
 - in the library, changed the arch target to get everything working on an orbstack vm with rosetta. Instead of march=native, used "-march=x86-64 -msse4.2 -mrtm". We pass these args to the DPDK build (in `dpdk-install.sh`) and make small changes to  `/dpdk-sys/build.rs`. 
-
+- the dpdk build removes a bunch of pmd drivers, because the rust lib links them all in which causes warnings about MEMPOOLs; this ends up causing some pmds (like af_xdp) to fail.
 
 # rust-dpdk
 

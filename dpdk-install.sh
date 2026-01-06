@@ -19,10 +19,25 @@ tar -xJf dpdk.tar.xz -C dpdk --strip-components=1
 # Build
 cd dpdk
 echo "Setting up build with meson..."
+
+# FLAGS EXPLANATION:
+# -march=x86-64 ... : Rosetta compatibility (kept from your script)
+# -Denable_drivers  : The Magic Flag.
+#    net/af_xdp     : The driver you need
+#    net/mlx5       : High-performance NIC driver
+#    net/pcap       : Virtual PCAP driver
+#    mempool/ring   : REQUIRED default mempool handler
+#    bus/vdev       : Required for af_xdp/pcap
+#    bus/pci        : Required for mlx5
+
 # Use x86-64 baseline with SSE4.2 and RTM instead of native
 # This is compatible with Rosetta x86-64 emulation which doesn't support AVX
 export CFLAGS="-march=x86-64 -msse4.2 -mrtm"
-meson setup build -Dplatform=generic
+meson setup build \
+    -Dplatform=generic \
+    -Denable_drivers=net/af_xdp,net/mlx5,net/pcap,mempool/ring,bus/vdev,bus/pci
+
+# meson setup build -Dplatform=generic
 
 echo "Building with ninja..."
 ninja -C build
@@ -36,7 +51,7 @@ sudo ldconfig
 # Cleanup
 cd ..
 echo "Cleaning up..."
-rm -rf dpdk dpdk.tar.xz
+rm -rf dpdk.tar.xz
 
 echo "DPDK ${DPDK_VERSION} installation complete!"
 echo "Note: Configured with -march=x86-64 -msse4.2 -mrtm for Rosetta compatibility"
